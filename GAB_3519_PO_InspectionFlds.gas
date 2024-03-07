@@ -1,0 +1,248 @@
+Program.Sub.ScreenSU.Start
+gui.F_Insp..create
+gui.F_Insp..caption("Inspection Options")
+gui.F_Insp..size(3960,3225)
+gui.F_Insp..position(0,0)
+gui.F_Insp..event(unload,f_insp_unload)
+gui.F_Insp..alwaysontop(False)
+gui.F_Insp..fontname("Arial")
+gui.F_Insp..fontsize(8)
+gui.F_Insp..forecolor(0)
+gui.F_Insp..fontstyle(,,,,)
+gui.F_Insp..BackColor(-2147483633)
+gui.F_Insp..controlbox(True)
+gui.F_Insp..maxbutton(False)
+gui.F_Insp..minbutton(False)
+gui.F_Insp..mousepointer(0)
+gui.F_Insp..moveable(True)
+gui.F_Insp..sizeable(False)
+gui.F_Insp..ShowInTaskBar(True)
+gui.F_Insp..titlebar(True)
+gui.F_Insp.frmInsp.create(frame)
+gui.F_Insp.frmInsp.caption("")
+gui.F_Insp.frmInsp.size(3405,1650)
+gui.F_Insp.frmInsp.position(100,100)
+gui.F_Insp.frmInsp.visible(True)
+gui.F_Insp.frmInsp.fontname("Arial")
+gui.F_Insp.frmInsp.fontsize(8)
+gui.F_Insp.chkInspMech.create(checkbox)
+gui.F_Insp.chkInspMech.caption("MECHANICAL INSPECTION AT DEWEY")
+gui.F_Insp.chkInspMech.visible(True)
+gui.F_Insp.chkInspMech.size(3030,255)
+gui.F_Insp.chkInspMech.zorder(0)
+gui.F_Insp.chkInspMech.position(200,200)
+gui.F_Insp.chkInspMech.enabled(True)
+gui.F_Insp.chkInspMech.alignment(0)
+gui.F_Insp.chkInspMech.parent("frminsp")
+gui.F_Insp.chkInspMech.fontname("Arial")
+gui.F_Insp.chkInspMech.fontsize(8)
+gui.F_Insp.chkInspElectr.create(checkbox)
+gui.F_Insp.chkInspElectr.caption("ELECTRICAL INSPECTION AT DEWEY")
+gui.F_Insp.chkInspElectr.visible(True)
+gui.F_Insp.chkInspElectr.size(3090,255)
+gui.F_Insp.chkInspElectr.zorder(0)
+gui.F_Insp.chkInspElectr.position(200,550)
+gui.F_Insp.chkInspElectr.enabled(True)
+gui.F_Insp.chkInspElectr.alignment(0)
+gui.F_Insp.chkInspElectr.parent("frminsp")
+gui.F_Insp.chkInspElectr.fontname("Arial")
+gui.F_Insp.chkInspElectr.fontsize(8)
+gui.F_Insp.chkInspDept.create(checkbox)
+gui.F_Insp.chkInspDept.caption("DEPARTMENTAL INSPECTION ONLY")
+gui.F_Insp.chkInspDept.visible(True)
+gui.F_Insp.chkInspDept.size(2895,255)
+gui.F_Insp.chkInspDept.zorder(0)
+gui.F_Insp.chkInspDept.position(200,900)
+gui.F_Insp.chkInspDept.enabled(True)
+gui.F_Insp.chkInspDept.alignment(0)
+gui.F_Insp.chkInspDept.parent("frminsp")
+gui.F_Insp.chkInspDept.fontname("Arial")
+gui.F_Insp.chkInspDept.fontsize(8)
+gui.F_Insp.chkInspGovt.create(checkbox)
+gui.F_Insp.chkInspGovt.caption("GOVT. SOURCE INSPECTION")
+gui.F_Insp.chkInspGovt.visible(True)
+gui.F_Insp.chkInspGovt.size(2835,240)
+gui.F_Insp.chkInspGovt.zorder(0)
+gui.F_Insp.chkInspGovt.position(200,1250)
+gui.F_Insp.chkInspGovt.enabled(True)
+gui.F_Insp.chkInspGovt.alignment(0)
+gui.F_Insp.chkInspGovt.parent("frminsp")
+gui.F_Insp.chkInspGovt.fontname("Arial")
+gui.F_Insp.chkInspGovt.fontsize(8)
+gui.F_Insp.cmdSave.create(button)
+gui.F_Insp.cmdSave.caption("Save")
+gui.F_Insp.cmdSave.visible(True)
+gui.F_Insp.cmdSave.size(855,375)
+gui.F_Insp.cmdSave.zorder(0)
+gui.F_Insp.cmdSave.position(1300,2100)
+gui.F_Insp.cmdSave.enabled(True)
+gui.F_Insp.cmdSave.fontname("Arial")
+gui.F_Insp.cmdSave.fontsize(8)
+gui.F_Insp.cmdSave.event(click,cmdsave_click)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sPO.Declare(String)
+
+F.Intrinsic.Control.If(V.Caller.Hook,=,"16850")
+	V.Passed.000065.Set("Inspection")
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,"16890")
+	V.Local.sPO.Set(V.Passed.000008)
+	F.Intrinsic.Control.If(V.Local.sPO,=,"0")
+		F.Intrinsic.Control.End
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+	F.Intrinsic.Control.CallSub(F_insp_load)
+	Gui.F_Insp..Show
+F.Intrinsic.Control.Else
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GAB_PO_InspectionFlds.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.Debug.SetLA(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+Program.Sub.Main.End
+
+program.sub.cmdsave_click.start
+F.Intrinsic.Control.SetErrorHandler("cmdsave_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSql.Declare(String)
+V.Local.sPO.Declare(String)
+
+V.Local.sPO.Set(V.Passed.000008)
+F.Intrinsic.String.LPad(V.Local.sPO,"0",7,V.Local.sPO)
+F.Intrinsic.String.Concat("SELECT * FROM GAB_3519_PO_INSPECTIONFLD WHERE PURCHASE_ORDER='",V.Local.sPO,"'",V.Local.sSql)
+F.ODBC.Connection!conx.OpenRecordsetRW("rstSave",V.Local.sSql)
+F.Intrinsic.Control.If(V.ODBC.conx!rstSave.EOF,=,"True")
+	F.ODBC.conx!rstSave.AddNew
+	F.ODBC.conx!rstSave.Set!PURCHASE_ORDER(V.Local.sPO)
+F.Intrinsic.Control.Endif
+F.Intrinsic.Control.If(V.Screen.F_Insp!chkInspMech.Value,=,1)
+	F.ODBC.conx!rstSave.Set!INSPM("1")
+F.Intrinsic.Control.Else
+	F.ODBC.conx!rstSave.Set!INSPM("0")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(V.Screen.F_Insp!chkInspElectr.Value,=,1)
+	F.ODBC.conx!rstSave.Set!INSPE("1")
+F.Intrinsic.Control.Else
+	F.ODBC.conx!rstSave.Set!INSPE("0")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(V.Screen.F_Insp!chkInspDept.Value,=,1)
+	F.ODBC.conx!rstSave.Set!INSPD("1")
+F.Intrinsic.Control.Else
+	F.ODBC.conx!rstSave.Set!INSPD("0")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(V.Screen.F_Insp!chkInspGovt.Value,=,1)
+	F.ODBC.conx!rstSave.Set!INSPG("1")
+F.Intrinsic.Control.Else
+	F.ODBC.conx!rstSave.Set!INSPG("0")
+F.Intrinsic.Control.EndIf
+F.ODBC.conx!rstSave.Update
+F.ODBC.conx!rstSave.Close
+F.Intrinsic.UI.Msgbox("Options saved","Inspection:")
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdsave_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GAB_PO_InspectionFlds.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.Debug.SetLA(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+program.sub.cmdsave_click.end
+
+program.sub.f_insp_unload.start
+F.Intrinsic.Control.SetErrorHandler("f_insp_unload_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("f_insp_unload_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GAB_PO_InspectionFlds.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.Debug.SetLA(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+program.sub.f_insp_unload.end
+
+Program.Sub.f_insp_load.Start
+F.Intrinsic.Control.SetErrorHandler("f_insp_load_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSql.Declare(String)
+V.Local.sPO.Declare(String)
+
+V.Local.sPO.Set(V.Passed.000008)
+F.Intrinsic.String.LPad(V.Local.sPO,"0",7,V.Local.sPO)
+F.Intrinsic.String.Concat("SELECT * FROM GAB_3519_PO_INSPECTIONFLD WHERE PURCHASE_ORDER='",V.Local.sPO,"'",V.Local.sSql)
+F.ODBC.Connection!conx.OpenRecordsetRO("rstLoad",V.Local.sSql)
+F.Intrinsic.Control.If(V.ODBC.conx!rstLoad.EOF,=,"False")
+	F.Intrinsic.Control.If(V.ODBC.conx!rstLoad.FieldVal!INSPM,=,"1")
+		Gui.F_Insp.chkInspMech.Value(1)
+	F.Intrinsic.Control.Else
+		Gui.F_Insp.chkInspMech.Value(0)
+	F.Intrinsic.Control.Endif
+	F.Intrinsic.Control.If(V.ODBC.conx!rstLoad.FieldVal!INSPE,=,"1")
+		Gui.F_Insp.chkInspElectr.Value(1)
+	F.Intrinsic.Control.Else
+		Gui.F_Insp.chkInspElectr.Value(0)
+	F.Intrinsic.Control.Endif
+	F.Intrinsic.Control.If(V.ODBC.conx!rstLoad.FieldVal!INSPD,=,"1")
+		Gui.F_Insp.chkInspDept.Value(1)
+	F.Intrinsic.Control.Else
+		Gui.F_Insp.chkInspDept.Value(0)
+	F.Intrinsic.Control.Endif
+	F.Intrinsic.Control.If(V.ODBC.conx!rstLoad.FieldVal!INSPG,=,"1")
+		Gui.F_Insp.chkInspGovt.Value(1)
+	F.Intrinsic.Control.Else
+		Gui.F_Insp.chkInspGovt.Value(0)
+	F.Intrinsic.Control.Endif
+F.Intrinsic.Control.EndIf
+
+F.ODBC.conx!rstLoad.Close
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("f_insp_load_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GAB_PO_InspectionFlds.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.Debug.SetLA(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+Program.Sub.f_insp_load.End
+
+Program.Sub.Comments.Start
+${$0$}$GAB_PO_InspectionFlds$}$RRODRIGUEZ$}$4/19/2013
+${$1$}$$}$$}$1$}$16890$}$PUS064GH-SCRIPT-1-HOOK (PO MAINTENANCE)$}$4/19/2013 8:49:00 AM$}$(Program: PUR064GH ; Screen: PUS064GH)
+
+${$1$}$$}$$}$0$}$16850$}$PUS064GH-POPULATE-HOOK (PO MAINTENANCE)$}$4/19/2013 8:47:30 AM$}$(Program: PUR064GH ; Screen: PUS064GH)
+
+${$3$}$0$}$$}$-1$}$-1$}$$}$1/1/1900$}$Purchasing - New/Open, Script 1 button changed to inspection and it has 5 checkbox options.
+Program.Sub.Comments.End
+
